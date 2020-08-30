@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mContainer"
     android:layout_width="match_parent"
@@ -114,7 +115,7 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="32dp"
             android:contentDescription="@string/app_name"
-            android:src="@drawable/exo_controls_shuffle" />
+            android:src="@drawable/ic_shuffle_off" />
 
         <ImageView
             android:id="@+id/id_prev"
@@ -156,7 +157,7 @@
             android:layout_centerVertical="true"
             android:layout_marginEnd="32dp"
             android:contentDescription="@string/app_name"
-            android:src="@drawable/exo_controls_repeat_off" />
+            android:src="@drawable/ic_repeat_off" />
     </RelativeLayout>
 
     <RelativeLayout
