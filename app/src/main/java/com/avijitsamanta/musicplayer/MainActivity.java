@@ -27,12 +27,14 @@ import com.avijitsamanta.musicplayer.modal.MusicFiles;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     public static final int REQUEST_CODE = 101;
     public static List<MusicFiles> musicFilesList;
     public static boolean shuffleBoolean = false, repeatBoolean = false;
+    public static List<MusicFiles> albumLists = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static List<MusicFiles> getAllAudio(Context context) {
         List<MusicFiles> audioList = new ArrayList<>();
-
+        List<String> duplicate = new ArrayList<>();
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         String[] projection = {
                 MediaStore.Audio.Media.ALBUM,
@@ -124,8 +126,10 @@ public class MainActivity extends AppCompatActivity {
 
                     MusicFiles musicFiles = new MusicFiles(path, title, artist, album, duration, id);
                     audioList.add(musicFiles);
-
-                    Log.d("TAG", "getAllAudio: " + path);
+                    if (!duplicate.contains(album)) {
+                        albumLists.add(musicFiles);
+                        duplicate.add(album);
+                    }
                 }
                 cursor.close();
             }

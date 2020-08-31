@@ -1,6 +1,6 @@
 package com.avijitsamanta.musicplayer;
 
-import androidx.annotation.Nullable;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.palette.graphics.Palette;
 
@@ -15,7 +15,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.View;
+
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -33,6 +33,9 @@ import java.util.Random;
 import static com.avijitsamanta.musicplayer.MainActivity.musicFilesList;
 import static com.avijitsamanta.musicplayer.MainActivity.repeatBoolean;
 import static com.avijitsamanta.musicplayer.MainActivity.shuffleBoolean;
+import static com.avijitsamanta.musicplayer.adopter.AlbumDetailsAdopter.ALBUM_DETAILS;
+import static com.avijitsamanta.musicplayer.adopter.AlbumDetailsAdopter.SENDER;
+import static com.avijitsamanta.musicplayer.adopter.AlbumDetailsAdopter.list;
 import static com.avijitsamanta.musicplayer.adopter.MusicAdopter.POSITION;
 
 public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnCompletionListener {
@@ -74,6 +77,7 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
 
             }
         });
+
         PlayerActivity.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -346,7 +350,11 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
         Intent in = getIntent();
         if (in != null) {
             position = in.getIntExtra(POSITION, -1);
-            listSongs = musicFilesList;
+            String sender = in.getStringExtra(SENDER);
+            if (sender != null && sender.equals(ALBUM_DETAILS)) {
+                listSongs = list;
+            } else
+                listSongs = musicFilesList;
             if (listSongs != null) {
                 playPauseBtn.setImageResource(R.drawable.ic_pause);
                 uri = Uri.parse(listSongs.get(position).getPath());

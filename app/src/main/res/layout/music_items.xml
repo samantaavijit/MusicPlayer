@@ -12,6 +12,7 @@
         android:id="@+id/musicImg"
         android:layout_width="60dp"
         android:layout_height="60dp"
+        android:scaleType="centerCrop"
         android:contentDescription="@string/app_name"
         android:padding="5dp" />
 
@@ -25,13 +26,15 @@
         android:layout_toEndOf="@+id/musicImg"
         android:ellipsize="end"
         android:maxLines="1"
+        android:textColor="@android:color/white"
         android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
     <ImageView
         android:id="@+id/menu_more"
-        android:layout_width="60dp"
+        android:layout_width="40dp"
         android:layout_height="60dp"
         android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
         android:contentDescription="@string/app_name"
         android:padding="5dp"
         android:src="@drawable/ic_more" />
