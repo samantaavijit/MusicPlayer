@@ -1,5 +1,6 @@
 package com.avijitsamanta.musicplayer.fragments;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,7 +20,8 @@ import static com.avijitsamanta.musicplayer.MainActivity.musicFilesList;
 
 public class SongsFragment extends Fragment {
     private RecyclerView recyclerView;
-    private MusicAdopter adopter;
+    @SuppressLint("StaticFieldLeak")
+    public static MusicAdopter musicAdopter;
 
     public SongsFragment() {
 
@@ -38,9 +40,9 @@ public class SongsFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        if (musicFilesList != null) {
-            adopter = new MusicAdopter(musicFilesList, getActivity());
-            recyclerView.setAdapter(adopter);
+        if (musicFilesList.size() > 0) {
+            musicAdopter = new MusicAdopter(musicFilesList, getActivity());
+            recyclerView.setAdapter(musicAdopter);
         }
     }
 }

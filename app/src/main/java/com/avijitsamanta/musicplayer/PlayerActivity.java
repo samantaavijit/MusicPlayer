@@ -37,6 +37,7 @@ import static com.avijitsamanta.musicplayer.adopter.AlbumDetailsAdopter.ALBUM_DE
 import static com.avijitsamanta.musicplayer.adopter.AlbumDetailsAdopter.SENDER;
 import static com.avijitsamanta.musicplayer.adopter.AlbumDetailsAdopter.list;
 import static com.avijitsamanta.musicplayer.adopter.MusicAdopter.POSITION;
+import static com.avijitsamanta.musicplayer.adopter.MusicAdopter.musicFiles;
 
 public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnCompletionListener {
     private TextView songName, artistName, durationPlayed, duration_total;
@@ -354,7 +355,7 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
             if (sender != null && sender.equals(ALBUM_DETAILS)) {
                 listSongs = list;
             } else
-                listSongs = musicFilesList;
+                listSongs = musicFiles;
             if (listSongs != null) {
                 playPauseBtn.setImageResource(R.drawable.ic_pause);
                 uri = Uri.parse(listSongs.get(position).getPath());

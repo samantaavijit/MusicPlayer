@@ -3,6 +3,7 @@ package com.avijitsamanta.musicplayer;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -13,12 +14,15 @@ import androidx.viewpager.widget.ViewPager;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
+
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.avijitsamanta.musicplayer.fragments.AlbumFragment;
@@ -27,14 +31,19 @@ import com.avijitsamanta.musicplayer.modal.MusicFiles;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
     public static final int REQUEST_CODE = 101;
     public static List<MusicFiles> musicFilesList;
     public static boolean shuffleBoolean = false, repeatBoolean = false;
     public static List<MusicFiles> albumLists = new ArrayList<>();
+    private static final String MY_SORT_PREF = "SortOrder";
+    public static final String SORTING = "sorting";
+    public static final String SORT_BY_NAME = "by_name";
+    public static final String SORT_BY_DATE = "by_date";
+    public static final String SORT_BY_SIZE = "by_size";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,10 +107,25 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public static List<MusicFiles> getAllAudio(Context context) {
+    public List<MusicFiles> getAllAudio(Context context) {
+        SharedPreferences preferences = getSharedPreferences(MY_SORT_PREF, MODE_PRIVATE);
+        String sortOrder = preferences.getString(SORTING, SORT_BY_NAME);
+        String order = null;
         List<MusicFiles> audioList = new ArrayList<>();
         List<String> duplicate = new ArrayList<>();
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        assert sortOrder != null;
+        switch (sortOrder) {
+            case SORT_BY_NAME:
+                order = MediaStore.MediaColumns.DISPLAY_NAME + " ASC";
+                break;
+            case SORT_BY_DATE:
+                order = MediaStore.MediaColumns.DATE_ADDED + " ASC";
+                break;
+            case SORT_BY_SIZE:
+                order = MediaStore.MediaColumns.SIZE + " DESC";
+                break;
+        }
         String[] projection = {
                 MediaStore.Audio.Media.ALBUM,
                 MediaStore.Audio.Media.TITLE,
@@ -113,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             @SuppressLint("Recycle") Cursor cursor = context.getContentResolver().query(uri, projection,
-                    null, null, null);
+                    null, null, order);
 
             if (cursor != null) {
                 while (cursor.moveToNext()) {
@@ -160,5 +184,56 @@ public class MainActivity extends AppCompatActivity {
                 initViewPager();
             }
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.search, menu);
+        MenuItem menuItem = menu.findItem(R.id.search);
+        SearchView searchView = (SearchView) menuItem.getActionView();
+        searchView.setOnQueryTextListener(this);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        List<MusicFiles> myFiles = new ArrayList<>();
+        for (MusicFiles song : musicFilesList) {
+            if (song.getTitle().toLowerCase().contains(newText.toLowerCase())) {
+                myFiles.add(song);
+            }
+        }
+        SongsFragment.musicAdopter.updateList(myFiles);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        @SuppressLint("CommitPrefEdits") SharedPreferences.Editor editor = getSharedPreferences(MY_SORT_PREF, MODE_PRIVATE).edit();
+        switch (item.getItemId()) {
+            case R.id.byName:
+                editor.putString(SORTING, SORT_BY_NAME);
+                editor.apply();
+                this.recreate();
+                break;
+            case R.id.byDate:
+                editor.putString(SORTING, SORT_BY_DATE);
+                editor.apply();
+                this.recreate();
+                break;
+            case R.id.bySize:
+                editor.putString(SORTING, SORT_BY_SIZE);
+                editor.apply();
+                this.recreate();
+                break;
+
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

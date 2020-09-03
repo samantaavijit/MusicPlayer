@@ -24,11 +24,12 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MusicAdopter extends RecyclerView.Adapter<MusicAdopter.SongViewHolder> {
 
-    private List<MusicFiles> musicFiles;
+    public static List<MusicFiles> musicFiles;
     private Context context;
     public static final String POSITION = "position";
 
@@ -80,6 +81,12 @@ public class MusicAdopter extends RecyclerView.Adapter<MusicAdopter.SongViewHold
                 return false;
             });
         });
+    }
+
+    public void updateList(List<MusicFiles> mm) {
+        musicFiles = new ArrayList<>();
+        musicFiles.addAll(mm);
+        notifyDataSetChanged();
     }
 
     private void deleteFile(int position, View view) {
